@@ -5,3 +5,4 @@ __pycache__/
 Scipts/
 .vscode/
 hospital_venv/
+pyvenv.cfg
