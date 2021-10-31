@@ -1,5 +1,8 @@
-# created by virtualenv automatically
+# add venv folder here
 .idea/
 lib/
 __pycache__/
 Scipts/
+.vscode/
+hospital_venv/
+pyvenv.cfg
