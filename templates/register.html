@@ -5,13 +5,6 @@
 {%endblock%}
 
 {% block body%}
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-    <div class="text-center mb-3 mx-1 mx-md-4 mt-4 alert alert-danger" role="alert">
-        {{ messages[0] }}
-    </div>
-{% endif %}
-{% endwith %}
 <section class="vh-100" style="background-color: #eee;">
     <div class="container h-100">
       <div class="row d-flex justify-content-center align-items-center h-100">

@@ -1,7 +1,14 @@
 from flask import Flask, Blueprint, current_app
-
+# from flask_login import login_required, UserMixin, LoginManager, login_user, logout_user, current_user
 from .views import main
 
+# login_manager = LoginManager()
+# login_manager.login_view = 'login'
+# login_manager.init_app(main)
+
+# @login_manager.user_loader
+# def load_user(user_id):
+#     return User.query.get(int(user_id))
 
 def create_app(config_file='settings.py'):
     app = Flask(__name__)
