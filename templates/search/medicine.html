@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block head%}
+<title>Find medicine</title>
+<!-- <link rel="stylesheet" href="../../script/search.css"> -->
+
+{%endblock%}
+
+{% block body%}
+
+<div class="container">
+    <h2>Find medicine</h2>
+    <p>Type something in the input field to search the table for first names, last names or emails:</p>  
+    <form class="row" method="POST" action="/">
+        <input class="form-control col" id="myInput" type="text" placeholder="Search..">
+        <div class="col-1"></div>
+        <button type="submit" class="btn btn-primary btn-lg col-2">Search</button>
+    </form>
+    <br>
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>Firstname</th>
+          <th>Lastname</th>
+          <th>Email</th>
+        </tr>
+      </thead>
+      <tbody id="myTable">
+        <tr>
+          <td>John</td>
+          <td>Doe</td>
+          <td>john@example.com</td>
+        </tr>
+        <tr>
+          <td>Mary</td>
+          <td>Moe</td>
+          <td>mary@mail.com</td>
+        </tr>
+        <tr>
+          <td>July</td>
+          <td>Dooley</td>
+          <td>july@greatstuff.com</td>
+        </tr>
+        <tr>
+          <td>Anja</td>
+          <td>Ravendale</td>
+          <td>a_r@test.com</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  {%endblock%}

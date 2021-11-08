@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block head%}
+<title>E-Hospital</title>
+<link rel="stylesheet" href="../static/style.css">
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+{%endblock%}
+
+{% block body%}
+
+<form method="POST" action="{{ url_for('main.dashboard_post') }}">
+    <div class="container">
+      <div class="row">
+        <button type="submit" name="record_choice" value="patient_record" class=" col btn btn-primary btn-square-xl mx-5 my-5">Patient</button>
+        <button type="submit" name="record_choice" value="disease_record" class=" col btn btn-primary btn-square-xl mx-5 my-5">Disease</button>
+        <button type="submit" name="record_choice" value="medicine_record" class=" col btn btn-primary btn-square-xl mx-5 my-5">Medicine</button>
+      </div>
+      <div class="row">
+        <button type="submit" name="record_choice" value="daily_report" class=" col btn btn-primary btn-square-xl mx-5 my-5">Daily report</button>
+        <button type="submit" name="record_choice" value="summarize_report" class=" col btn btn-primary btn-square-xl mx-5 my-5">Summarize report</button>
+        <!-- <button type="submit" name="record_choice" value="patient_record" class=" col btn btn-primary btn-square-xl mx-5 my-5">Medicine</button> -->
+      </div>
+    </div>
+  </form>
+{% endblock %}
