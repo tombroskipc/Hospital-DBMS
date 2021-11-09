@@ -13,8 +13,8 @@
     <div class="container-fluid h-custom">
       <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-md-9 col-lg-6 col-xl-5">
-          <h1 class="text-primary">Login to manage your appointment</h1>
-          <h1 class="text-primary">keep track your medical records</h1>
+          <h1 class="text-primary">Login to manage your appointments</h1>
+          <h1 class="text-primary">Keep track of patients</h1>
         </div>
         <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
           <form method="POST" action="{{ url_for('main.login_post') }}">
@@ -30,9 +30,9 @@
             {% endwith %}
             <!-- Email input -->
             <div class="form-outline mb-4">
-              <input name="email" type="email" id="form3Example3" class="form-control form-control-lg"
-                placeholder="Enter a valid email address" required />
-              <label class="form-label" for="form3Example3">Email address</label>
+              <input name="id" type="number" id="form3Example3" class="form-control form-control-lg"
+                placeholder="Enter your ID (numbers)" required />
+              <label class="form-label" for="form3Example3">Staff id</label>
             </div>
   
             <!-- Password input -->
@@ -45,8 +45,8 @@
               <button type="submit" class="btn btn-primary btn-lg"
                 style="padding-left: 2.5rem; padding-right: 2.5rem;">Login
             </button>
-              <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="{{ url_for('main.register') }}"
-                  class="link-danger">Register</a></p>
+              <!-- <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="{{ url_for('main.register') }}"
+                  class="link-danger">Register</a></p> -->
             </div>
           </form>
         </div>

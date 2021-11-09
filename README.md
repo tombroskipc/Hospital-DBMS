@@ -16,7 +16,7 @@ set FLASK_APP=__init__
 set FLASK_ENV=development
 ```
 
-## Linux terminal
+## Linux Bash
 
 ```bash
 export FLASK_APP=__init__

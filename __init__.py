@@ -1,5 +1,7 @@
 from flask import Flask, Blueprint, current_app
 # from flask_login import login_required, UserMixin, LoginManager, login_user, logout_user, current_user
+from db import mysql
+
 from .views import main
 
 # login_manager = LoginManager()
@@ -12,7 +14,11 @@ from .views import main
 
 def create_app(config_file='settings.py'):
     app = Flask(__name__)
-    
+    app.config['MYSQL_HOST'] = 'localhost'
+    app.config['MYSQL_USER'] = 'root'
+    app.config['MYSQL_PASSWORD'] = 'password'
+    app.config['MYSQL_DB'] = 'hospital_dbms'
+    mysql.init_app(app)
     app.config.from_pyfile(config_file)
     app.register_blueprint(main)
 
