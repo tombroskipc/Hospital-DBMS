@@ -7,7 +7,7 @@
 {%endblock%}
 
 {% block body%}
-
+<h1 class="h1 text-dark">Welcome {{ session['type'] }} {{ session['name'] }}</h1>
 <form method="POST" action="{{ url_for('main.dashboard_post') }}">
     <div class="container">
       <div class="row">

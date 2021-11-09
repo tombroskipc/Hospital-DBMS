@@ -43,9 +43,32 @@ def login_post():
         cur = mysql.connection.cursor()
         cur.execute(f"SELECT * FROM Doctor WHERE Doc_id={id} AND pass={password}")
         account = cur.fetchone()
+        cur.close()
         if account:
             session[LOGGED_IN] = True
             session['id'] = id
+            session['type'] = 'doctor'
+            session['name'] = account[1]
+            return redirect(url_for('main.dashboard'))
+        cur = mysql.connection.cursor()
+        cur.execute(f"SELECT * FROM Nurse WHERE Nur_id={id} AND pass={password}")
+        account = cur.fetchone()
+        cur.close()
+        if account:
+            session[LOGGED_IN] = True
+            session['id'] = id
+            session['type'] = 'nurse'
+            session['name'] = account[1]
+            return redirect(url_for('main.dashboard'))
+        cur = mysql.connection.cursor()
+        cur.execute(f"SELECT * FROM Accountant WHERE Acct_id={id} AND pass={password}")
+        account = cur.fetchone()
+        cur.close()
+        if account:
+            session[LOGGED_IN] = True
+            session['id'] = id
+            session['type'] = 'Accountant'
+            session['name'] = account[1]
             return redirect(url_for('main.dashboard'))
     flash('Please check your id or password')
     return redirect(url_for('main.index'))
@@ -75,7 +98,7 @@ def logout():
         flash('You are not logged in!')
         return redirect(url_for('main.index'))
     session.pop(LOGGED_IN, None)
-    session.pop('email', None)
+    session.pop('id', None)
     flash('You have successfully logged out')
     return redirect(url_for('main.index'))
 
@@ -84,16 +107,12 @@ def profile():
     if LOGGED_IN not in session:
         flash('You are not logged in!')
         return redirect(url_for('main.index'))
+    
     return render_template('user//profile.html')
 
-@main.route('/edit-profile')
-def editprofile():
-    if LOGGED_IN not in session:
-        flash('You are not logged in!')
-        return redirect(url_for('main.index'))
-    return render_template('user//edit-profile.html')
 
-@main.route('/patient_record')
+
+@main.route('/patient-record')
 def patient_record():
     if LOGGED_IN not in session:
         flash('You are not logged in!')
@@ -101,6 +120,7 @@ def patient_record():
     cur = mysql.connection.cursor()
     cur.execute(f"SELECT * FROM Patient")
     patients = list(cur.fetchall())
+    cur.close()
     return render_template('dashboard//patient.html', patients=patients)
 
 @main.route('/patient_record', methods=['POST'])
@@ -125,8 +145,12 @@ def book_test():
 
 @main.route('/find-doctor')
 def find_doctor():
-    return render_template('search//doctor.html')
+    cur = mysql.connection.cursor()
+    cur.execute(f"SELECT * FROM Doctor")
+    doctors = list(cur.fetchall())
+    return render_template('search//doctor.html', doctors=doctors)
 
 @main.route('/find-medicine')
 def find_medicine():
     return render_template('search//medicine.html')
+

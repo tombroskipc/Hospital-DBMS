@@ -20,32 +20,21 @@
     <table class="table table-bordered table-striped">
       <thead>
         <tr>
-          <th>Firstname</th>
-          <th>Lastname</th>
-          <th>Email</th>
+          <th>Name</th>
+          <th>Specialization</th>
+          <th>Age</th>
+          <th>Phone</th>
         </tr>
       </thead>
       <tbody id="myTable">
+        {% for doctor in doctors %}
         <tr>
-          <td>John</td>
-          <td>Doe</td>
-          <td>john@example.com</td>
+          <td>{{ doctor[1] }}</td>
+          <td>{{ doctor[2] }}</td>
+          <td>{{ doctor[3] }}</td>
+          <td>{{ doctor[5] }}</td>
         </tr>
-        <tr>
-          <td>Mary</td>
-          <td>Moe</td>
-          <td>mary@mail.com</td>
-        </tr>
-        <tr>
-          <td>July</td>
-          <td>Dooley</td>
-          <td>july@greatstuff.com</td>
-        </tr>
-        <tr>
-          <td>Anja</td>
-          <td>Ravendale</td>
-          <td>a_r@test.com</td>
-        </tr>
+        {% endfor %}
       </tbody>
     </table>
   </div>

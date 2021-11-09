@@ -3,7 +3,7 @@ from flask import Flask, Blueprint, current_app
 from db import mysql
 
 from .views import main
-
+from record import record
 # login_manager = LoginManager()
 # login_manager.login_view = 'login'
 # login_manager.init_app(main)
@@ -21,5 +21,5 @@ def create_app(config_file='settings.py'):
     mysql.init_app(app)
     app.config.from_pyfile(config_file)
     app.register_blueprint(main)
-
+    app.register_blueprint(record)
     return app
