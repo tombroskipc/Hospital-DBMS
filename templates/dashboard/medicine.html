@@ -11,11 +11,12 @@
 <div class="container">
     <h2>Find medicine</h2>
     <p>Type something in the input field to search the table for first names, last names or emails:</p>  
-    <form class="row" method="POST" action="{{ url_for('main.find_medicine_post') }}">
+    <form class="row" method="POST" action="{{ url_for('record.medicine_record_post') }}">
         <input name="search_input" class="form-control col" id="myInput" type="text" placeholder="Search..">
         <div class="col-1"></div>
         <button type="submit" class="btn btn-primary btn-lg col-2">Search</button>
     </form>
+    <a href="{{ url_for('record.add_profile') }}" class="btn btn-primary btn-lg col-2 my-3">New medicine</a>
     <br>
     <table class="table table-bordered table-striped">
       <thead>
@@ -25,6 +26,7 @@
           <th>Price</th>
           <th>Quantity</th>
           <th>Manufacturer</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody id="myTable">
@@ -35,6 +37,11 @@
           <td>{{ medicine[2] }}</td>
           <td>{{ medicine[5] }}</td>
           <td>{{ medicine[6] }}</td>
+          <td>
+            <a href="{{ url_for('record.medicine_record_delete', id=medicine[0]) }}" class="btn btn-teal btn-rounded btn-sm m-0 bg-primary">View</a>
+            <a href="{{ url_for('record.medicine_record_delete', id=medicine[0]) }}" class="btn btn-teal btn-rounded btn-sm m-0 bg-warning">Edit</a>
+            <a href="{{ url_for('record.medicine_record_delete', id=medicine[0]) }}" class="btn btn-teal btn-rounded btn-sm m-0 bg-danger">Delete</a>
+        </td>        
         </tr>
         {% endfor %}
       </tbody>

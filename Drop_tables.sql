@@ -3,7 +3,7 @@
 DROP TABLE Bill;
 DROP TABLE Doc_belong;
 DROP TABLE Nur_belong;
-DROP TABLE Include;
+DROP TABLE include;
 DROP TABLE Report;
 DROP TABLE Dis_treatment;
 DROP TABLE Cure;

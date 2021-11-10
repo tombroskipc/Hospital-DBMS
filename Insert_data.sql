@@ -59,22 +59,22 @@ VALUES (10001, 2),
        (10003, 1);
 
 INSERT INTO Test
-VALUES (1, 'ear checking', '2021-06-06', 100);
+VALUES (1, 'ear checking', 100);
 
 INSERT INTO Do_test
-VALUES (1, 110001, 292567083);
+VALUES (1, 110001, 292567083, '2021-08-17', '2000');
 
 INSERT INTO Operation
-VALUES (1, 'heart operation', 3, '2021-08-17', '11:00:00');
+VALUES (1, 'heart operation', 3, '08:00:00');
 
 INSERT INTO Operate
-VALUES (1, 110003, 575419103);
+VALUES (1, 110003, 575419103, '2021-08-17 11:00:00', '2021-08-17 19:00:00', 999999);
 
 INSERT INTO Appointment
-VALUES ('2021-06-11');
+VALUES ('2021-06-11', '08:00:00');
 
 INSERT INTO Consult
-VALUES ('2021-06-11', 110001, 415310368);
+VALUES ('2021-06-11', 110001, 415310368, 2000);
 
 INSERT INTO Room
 VALUES (1, 'recovery', 50, 'available'),
@@ -88,6 +88,11 @@ INSERT INTO Nurse
 VALUES (120001, 'Willms Amy', 'cardiac', 40, 'day', '123'),
        (120002, 'Schmitt Erica', 'registered', 30, 'day', '123'),
        (120003, 'Blick Ken', 'registered', 34, 'night', '123');
+
+INSERT INTO Nur_belong
+VALUES (2, 120001),
+       (2, 120002),
+       (1 ,120003);
 
 INSERT INTO Care
 VALUES (575419103, 120001),

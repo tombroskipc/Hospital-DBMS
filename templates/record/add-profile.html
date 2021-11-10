@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block head%}
+<title>Add profile</title>
+<link rel="stylesheet" href="../../static/style-edit-profile.css">
+{%endblock%}
+
+{% block body %}
+<div class="container">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="text-center mb-3 mx-1 mx-md-4 mt-4 alert alert-danger" role="alert">
+            {{ messages[0] }}
+        </div>
+    {% endif %}
+    {% endwith %}
+    <div class="main-body">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                        <form method="POST" action="{{ url_for('record.add_profile_post') }}">
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-sm-3">
+                                    <h6 class="mb-0">Ssn</h6>
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+                                    <input name='ssn' type="text" class="form-control" placeholder="Enter ssn">
+                                </div>
+                            </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Full Name</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <input name='name' type="text" class="form-control" placeholder="Enter new name">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Sex</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <select name="sex" class="form-select" aria-label="Default select example">
+                                    <!-- <option selected>Choose gender</option> -->
+                                    <option value="M">Male</option>
+                                    <option value="F">Female</option>
+                                  </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">DOB</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <input name="DOB" placeholder="yyyy-mm-dd" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Address</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <input name="address" placeholder="Enter address" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Email</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <input name=email type="email" class="form-control" placeholder="Enter new email">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Phone</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <input name="phone" type="number" placeholder="Enter new phone number" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Start date</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <input name="start_date" type="text" class="form-control" placeholder="yyyy-mm-dd">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">End date</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <input name="end_date" type="text" class="form-control" placeholder="yyyy-mm-dd">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3"></div>
+                            <div class="col-sm-9 text-secondary">
+                                <input name="save_changes" type="submit" class="btn btn-primary px-4" value="Save Changes">
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

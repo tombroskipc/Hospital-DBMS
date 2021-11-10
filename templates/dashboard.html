@@ -7,12 +7,12 @@
 {%endblock%}
 
 {% block body%}
-
+<h1 class="h1 text-dark">Welcome {{ session['type'] }} {{ session['name'] }}</h1>
 <form method="POST" action="{{ url_for('main.dashboard_post') }}">
     <div class="container">
       <div class="row">
         <button type="submit" name="record_choice" value="patient_record" class=" col btn btn-primary btn-square-xl mx-5 my-5">Patient</button>
-        <button type="submit" name="record_choice" value="disease_record" class=" col btn btn-primary btn-square-xl mx-5 my-5">Disease</button>
+        <button type="submit" name="record_choice" value="medical_record" class=" col btn btn-primary btn-square-xl mx-5 my-5">Medical report</button>
         <button type="submit" name="record_choice" value="medicine_record" class=" col btn btn-primary btn-square-xl mx-5 my-5">Medicine</button>
       </div>
       <div class="row">
