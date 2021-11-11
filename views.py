@@ -51,7 +51,7 @@ def login_post():
         cur.close()
         if account:
             session[LOGGED_IN] = True
-            session['id'] = id
+            session['doc_id'] = id
             session['type'] = 'doctor'
             session['name'] = account[1]
             return redirect(url_for('main.dashboard'))
@@ -61,7 +61,7 @@ def login_post():
         cur.close()
         if account:
             session[LOGGED_IN] = True
-            session['id'] = id
+            session['nur_id'] = id
             session['type'] = 'nurse'
             session['name'] = account[1]
             return redirect(url_for('main.dashboard'))
@@ -71,7 +71,7 @@ def login_post():
         cur.close()
         if account:
             session[LOGGED_IN] = True
-            session['id'] = id
+            session['acct_id'] = id
             session['type'] = 'Accountant'
             session['name'] = account[1]
             return redirect(url_for('main.dashboard'))
@@ -196,4 +196,4 @@ def find_medicine_post():
     except:
         pass
     cur.close()
-    return render_template('search//medicine.html', medicines=search_result) 
+    return render_template('search//medicine.html', medicines=search_result)

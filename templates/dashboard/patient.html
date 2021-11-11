@@ -24,8 +24,8 @@
     <thead>
       <tr>
         <th>Name</th>
-        <th>Start date</th>
-        <th>End date</th>
+        <th>DOB</th>
+        <th>Email</th>
         <th>Sex</th>
         <th>Age</th>
         <th>Action</th>
@@ -35,14 +35,16 @@
       {% for patient in patients %}
       <tr>
         <td>{{patient[1]}}</td>
-        <td>{{patient[9]}}</td>
-        <td>{{patient[10]}}</td>
+        <td>{{patient[3]}}</td>
+        <td>{{patient[7]}}</td>
         <td>{{patient[2]}}</td>
         <td>{{patient[4]}}</td>
         <td>
             <a href="{{ url_for('record.view_record', ssn=patient[0]) }}" class="btn btn-teal btn-rounded btn-sm m-0 bg-primary">View</a>
             <a href="{{ url_for('record.edit_profile', ssn=patient[0]) }}" class="btn btn-teal btn-rounded btn-sm m-0 bg-warning">Edit</a>
             <a href="{{ url_for('record.delete_profile', ssn=patient[0]) }}" class="btn btn-teal btn-rounded btn-sm m-0 bg-danger">Delete</a>
+            <a href="{{ url_for('record.add_medical_record_id', ssn=patient[0]) }}" class="btn btn-teal btn-rounded btn-sm m-0 text-white bg-success">Add report</a>
+            
         </td>        
       </tr>
       {% endfor %}

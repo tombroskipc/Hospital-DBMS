@@ -82,7 +82,20 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-sm-3">
-                                <h6 class="mb-0">Start date</h6>
+                                <h6 class="mb-0">Insurance co</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <select name="ins_co" class="form-select" aria-label="Default select example">
+                                    <option selected>Choose Insurance Co</option>
+                                    {% for company in ins_companies %}
+                                    <option value="{{ company[0] }}">{{ company[1] }}</option>
+                                    {% endfor %}
+                                  </select>                            
+                             </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Ins Start date</h6>
                             </div>
                             <div class="col-sm-9 text-secondary">
                                 <input name="start_date" type="text" class="form-control" placeholder="yyyy-mm-dd">
@@ -90,7 +103,7 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-sm-3">
-                                <h6 class="mb-0">End date</h6>
+                                <h6 class="mb-0">Ins End date</h6>
                             </div>
                             <div class="col-sm-9 text-secondary">
                                 <input name="end_date" type="text" class="form-control" placeholder="yyyy-mm-dd">
