@@ -29,6 +29,10 @@ def dashboard_post():
             return redirect(url_for('record.medical_record'))
         elif request.form['record_choice'] == 'medicine_record':
             return redirect(url_for('record.medicine_record'))
+        elif request.form['record_choice'] == 'bill_record':
+            return redirect(url_for('record.bill_record'))
+        elif request.form['record_choice'] == 'bill_report':
+            return redirect(url_for('record.bill_report'))
     return redirect(url_for('main.index'))
 
 
@@ -51,7 +55,7 @@ def login_post():
         cur.close()
         if account:
             session[LOGGED_IN] = True
-            session['id'] = id
+            session['doc_id'] = id
             session['type'] = 'doctor'
             session['name'] = account[1]
             return redirect(url_for('main.dashboard'))
@@ -61,7 +65,7 @@ def login_post():
         cur.close()
         if account:
             session[LOGGED_IN] = True
-            session['id'] = id
+            session['nur_id'] = id
             session['type'] = 'nurse'
             session['name'] = account[1]
             return redirect(url_for('main.dashboard'))
@@ -71,7 +75,7 @@ def login_post():
         cur.close()
         if account:
             session[LOGGED_IN] = True
-            session['id'] = id
+            session['acct_id'] = id
             session['type'] = 'Accountant'
             session['name'] = account[1]
             return redirect(url_for('main.dashboard'))
@@ -196,4 +200,4 @@ def find_medicine_post():
     except:
         pass
     cur.close()
-    return render_template('search//medicine.html', medicines=search_result) 
+    return render_template('search//medicine.html', medicines=search_result)

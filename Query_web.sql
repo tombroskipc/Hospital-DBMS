@@ -1,0 +1,1 @@
+SELECT COUNT(*) FROM Report WHERE re_id=19782716;

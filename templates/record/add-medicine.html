@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block head%}
+<title>Add medicine</title>
+{%endblock%}
+
+{% block body%}
+<div class="container">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="text-center mb-3 mx-1 mx-md-4 mt-4 alert alert-danger" role="alert">
+        {{ messages[0] }}
+    </div>
+    {% endif %}
+    {% endwith %}
+    <div class="main-body">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                    <h1 class="h1 text-center text-primary">Add medicine</h1>
+                        <form method="POST" action="{{ url_for('record.add_medicine_post') }}">
+                        <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Medicine name</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <input name='mdc_name' type="text" class="form-control" placeholder="Enter name">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Price</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <input name='price' type="text" class="form-control" placeholder="Enter price">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Category</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <input name="category" placeholder="Enter category" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Description</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <input name=description type="text" class="form-control" placeholder="Enter description">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">MFG</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <input name="mfg" type="date" class="form-control" placeholder="yyyy-mm-dd">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">EXP</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <input name="exp" type="date" class="form-control" placeholder="yyyy-mm-dd">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Quantity</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <input name="quantity" type="number" class="form-control" placeholder="Enter quantity">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Cure</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <select name="dis_id" class="form-select" aria-label="Default select example">
+                                    <option selected>Choose...</option>
+                                    {% for disease in diseases %}
+                                    <option value="{{ disease[0] }}">{{ disease[1] }}</option>
+                                    {% endfor %}
+                                </select>                            
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3"></div>
+                            <div class="col-sm-9 text-secondary">
+                                <input name="save_changes" type="submit" class="btn btn-primary px-4" value="Confirm">
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

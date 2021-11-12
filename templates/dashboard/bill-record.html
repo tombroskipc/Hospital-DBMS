@@ -8,9 +8,9 @@
 
 {% block body%}
 <div class="container">
-  <h2>Find report</h2>
+  <h2>Find bill</h2>
   <p>Type something in the input field to search patient by name, gender, age, DOB, start, end date:</p>
-  <form method="POST" action="{{ url_for('record.medical_record_post') }}">
+  <form method="POST" action="{{ url_for('record.bill_record_post') }}">
     <div class="row">
       <input name="search_input" class="form-control col" id="myInput" type="text" placeholder="Search.." value="{{current_search}}">
       <div class="col-1"></div>
@@ -18,69 +18,111 @@
     </div>
     <div class="row">
       <label class=" h2 text-left col-3" for="between_date">Find between:</label>
-      <input class="btn btn-primary btn-lg col-2 mx-2" type="date" id="start_date" name="start_date" placeholder="Search"">
+      <input class="btn btn-primary btn-lg col-2 mx-2" type="date" id="start_date" name="start_date" placeholder="Search">
       <input class="btn btn-primary btn-lg col-2" type="date" id="end_date" name="end_date" placeholder="Search">
       <input class="btn btn-primary btn-lg col-1 mx-5" type="submit" value="Submit">
     </div>
 </form>
-<a href="{{ url_for('record.add_medical_record') }}" class="btn btn-primary btn-lg col-2 my-3">New report</a>
-<p class="h4 text-info">{{ num_reports }}{% if num_reports <= 1 %} report {% else %} reports {% endif %} found </p>
+<a href="{{ url_for('record.add_bill_record') }}" class="btn btn-primary btn-lg col-2 my-3">New Bill</a>
+<p class="h4 text-info">{{ num_bills }}{% if num_bills <= 1 %} bill {% else %} bills {% endif %} found </p>
 
-{% for report in reports %}
+{% for bill in bills %}
 <div class="col-md-8">
     <div class="card mb-5">
       <div class="card-body">
         <div class="row">
           <div class="col-sm-3">
-            <h6 class="mb-0 text-primary">Report ID</h6>
+            <h6 class="mb-0 text-primary">Bill No</h6>
           </div>
           <div class="col-sm-9 text-primary">
-            {{ report[0] }}
+            {{ bill[0] }}
+          </div>
+        </div>
+
+        <hr>
+        <div class="row">
+          <div class="col-sm-3">
+            <h6 class="mb-0">Patient</h6>
+          </div>
+          <div class="col-sm-9 text-secondary">
+            {{ bill[7] }}
+          </div>
+        </div>
+
+        <hr>
+        <div class="row">
+          <div class="col-sm-3">
+            <h6 class="mb-0">Created date</h6>
+          </div>
+          <div class="col-sm-9 text-secondary">
+            {{ bill[1] }}
           </div>
         </div>
         <hr>
         <div class="row">
           <div class="col-sm-3">
-            <h6 class="mb-0">Full Name</h6>
+            <h6 class="mb-0">Service charge</h6>
           </div>
           <div class="col-sm-9 text-secondary">
-            {{ report[1] }}
+            {{ bill[3] }}
           </div>
         </div>
         <hr>
         <div class="row">
           <div class="col-sm-3">
-            <h6 class="mb-0">Category</h6>
+            <h6 class="mb-0">Total fee</h6>
           </div>
           <div class="col-sm-9 text-secondary">
-            {{ report[3] }}
+            {{ bill[5] }}
+          </div>
+        </div>
+
+        <hr>
+        <div class="row">
+          <div class="col-sm-3">
+            <h6 class="mb-0">Discount</h6>
+          </div>
+          <div class="col-sm-9 text-secondary">
+            {{ bill[4] }}
+          </div>
+        </div>
+
+        <hr>
+        <div class="row">
+          <div class="col-sm-3">
+            <h6 class="mb-0">Purchase date</h6>
+          </div>
+          <div class="col-sm-9 text-secondary">
+            {{ bill[2] }}
+          </div>
+        </div>
+
+        <hr>
+        <div class="row">
+          <div class="col-sm-3">
+            <h6 class="mb-0">Purchase type</h6>
+          </div>
+          <div class="col-sm-9 text-secondary">
+            {{ bill[6] }}
+          </div>
+        </div>
+
+        <hr>
+        <div class="row">
+          <div class="col-sm-3">
+            <h6 class="mb-0">Acct id</h6>
+          </div>
+          <div class="col-sm-9 text-secondary">
+            {{ bill[9] }}
           </div>
         </div>
         <hr>
         <div class="row">
           <div class="col-sm-3">
-            <h6 class="mb-0">Description</h6>
+            <h6 class="mb-0">Phone</h6>
           </div>
           <div class="col-sm-9 text-secondary">
-            {{ report[4] }}
-          </div>
-        </div>
-        <hr>
-        <div class="row">
-          <div class="col-sm-3">
-            <h6 class="mb-0">Doctor in charge</h6>
-          </div>
-          <div class="col-sm-9 text-secondary">
-            {{ report[2] }}
-          </div>
-        </div>
-        <hr>
-        <div class="row">
-          <div class="col-sm-3">
-            <h6 class="mb-0">Date</h6>
-          </div>
-          <div class="col-sm-9 text-secondary">
-            {{ report[5] }}
+            {{ bill[8] }}
           </div>
         </div>
       </div>
