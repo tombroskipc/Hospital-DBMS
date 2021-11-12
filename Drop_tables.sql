@@ -3,7 +3,7 @@
 DROP TABLE Bill;
 DROP TABLE Doc_belong;
 DROP TABLE Nur_belong;
-DROP TABLE include;
+DROP TABLE Include;
 DROP TABLE Report;
 DROP TABLE Dis_treatment;
 DROP TABLE Cure;
@@ -27,3 +27,5 @@ DROP TABLE Operation;
 DROP TABLE Appointment;
 DROP TABLE Room;
 DROP TABLE Nurse;
+
+DROP SCHEMA Hospital;

@@ -1,6 +1,12 @@
+-- CREATE a Hospital schema
+CREATE SCHEMA Hospital;
+
+-- USE Hospital schema
+USE Hospital;
+
 -- CREATE 25 TABLES
 CREATE TABLE Insurance_company (
-    InsCo_id INT NOT NULL,
+    InsCo_id INT NOT NULL AUTO_INCREMENT,
     InsCo_name VARCHAR(50) NOT NULL,
     Address VARCHAR(100) NOT NULL,
     Tel_no VARCHAR(10) NOT NULL,
@@ -24,13 +30,14 @@ CREATE TABLE Patient (
 );
 
 CREATE TABLE Accountant (
-    Acct_id INT NOT NULL,
+    Acct_id INT NOT NULL AUTO_INCREMENT,
     Acct_name VARCHAR(50) NOT NULL,
     Email VARCHAR(50) NOT NULL,
     Tel_no VARCHAR(10) NOT NULL,
-    pass VARCHAR(50), 
     PRIMARY KEY (Acct_id)
 );
+-- Set up starting value
+ALTER TABLE Accountant AUTO_INCREMENT = 130001;
 
 CREATE TABLE Bill (
     Bill_no INT NOT NULL,
@@ -50,21 +57,22 @@ CREATE TABLE Bill (
 );
 
 CREATE TABLE Department (
-    Dept_id INT NOT NULL,
+    Dept_id INT NOT NULL AUTO_INCREMENT,
     Dept_name VARCHAR(50) NOT NULL,
     PRIMARY KEY (Dept_id)
 );
 
 CREATE TABLE Doctor (
-    Doc_id INT NOT NULL,
+    Doc_id INT NOT NULL AUTO_INCREMENT,
     Doc_name VARCHAR(50) NOT NULL,
     Doc_type VARCHAR(20) NOT NULL,
     Age INT,
     Address VARCHAR(100),
     Tel_no VARCHAR(10) NOT NULL,
-    pass VARCHAR(50), 
     PRIMARY KEY (Doc_id)
 );
+-- Set up starting value
+ALTER TABLE Doctor AUTO_INCREMENT = 110001;
 
 CREATE TABLE Doc_belong (
     Dept_id INT NOT NULL,
@@ -87,7 +95,7 @@ CREATE TABLE Report (
 );
 
 CREATE TABLE Medicine (
-    Mdc_id INT NOT NULL,
+    Mdc_id INT NOT NULL AUTO_INCREMENT,
     Mdc_name VARCHAR(50) NOT NULL,
     Price INT,
     MFG DATE NOT NULL,
@@ -96,6 +104,8 @@ CREATE TABLE Medicine (
     Manufacturer VARCHAR(50),
     PRIMARY KEY (Mdc_id)
 );
+-- Set up starting value
+ALTER TABLE Medicine AUTO_INCREMENT = 10001;
 
 CREATE TABLE Include (
     Re_id INT NOT NULL,
@@ -107,7 +117,7 @@ CREATE TABLE Include (
 );
 
 CREATE TABLE Disease (
-    Dis_id INT NOT NULL,
+    Dis_id INT NOT NULL AUTO_INCREMENT,
     Dis_name VARCHAR(50) NOT NULL,
     Dis_description VARCHAR(100),
     PRIMARY KEY (Dis_id)
@@ -139,7 +149,7 @@ CREATE TABLE Get_disease (
 );
 
 CREATE TABLE Test (
-    Test_id INT NOT NULL,
+    Test_id INT NOT NULL AUTO_INCREMENT,
     Test_name VARCHAR(50) NOT NULL,
     Test_room_no INT NOT NULL,
     PRIMARY KEY (Test_id)
@@ -158,7 +168,7 @@ CREATE TABLE Do_test (
 );
 
 CREATE TABLE Operation (
-    Op_id INT NOT NULL,
+    Op_id INT NOT NULL AUTO_INCREMENT,
     Op_name VARCHAR(50) NOT NULL,
     Op_room_no INT NOT NULL,
     Duration TIME,
@@ -179,24 +189,25 @@ CREATE TABLE Operate (
 );
 
 CREATE TABLE Appointment (
-    Date DATE NOT NULL,
+    Appt_id INT NOT NULL AUTO_INCREMENT,
     Duration TIME,
-    PRIMARY KEY (Date)
+    PRIMARY KEY (Appt_id)
 );
 
 CREATE TABLE Consult (
-    Date DATE NOT NULL,
+    Appt_id INT NOT NULL,
     Doc_id INT NOT NULL,
     Ssn INT NOT NULL,
+    Date DATE,
     Fee INT,
     PRIMARY KEY (Date, Doc_id, Ssn),
-    FOREIGN KEY (Date) REFERENCES Appointment(Date) ON DELETE CASCADE,
+    FOREIGN KEY (Appt_id) REFERENCES Appointment(Appt_id) ON DELETE CASCADE,
     FOREIGN KEY (Doc_id) REFERENCES Doctor(Doc_id),
     FOREIGN KEY (Ssn) REFERENCES Patient(Ssn) ON DELETE CASCADE
 );
 
 CREATE TABLE Room (
-    Room_no INT NOT NULL,
+    Room_no INT NOT NULL AUTO_INCREMENT,
     Room_type VARCHAR(20) NOT NULL,
     Room_cost INT,
     Status VARCHAR(100),
@@ -214,14 +225,15 @@ CREATE TABLE Admit (
 );
 
 CREATE TABLE Nurse (
-    Nur_id INT NOT NULL,
+    Nur_id INT NOT NULL AUTO_INCREMENT,
     Nur_name VARCHAR(50) NOT NULL,
     Nur_type VARCHAR(20) NOT NULL,
     Age INT,
     Shift VARCHAR(10),
-    pass VARCHAR(50),
     PRIMARY KEY (Nur_id)
 );
+-- Set up starting value
+ALTER TABLE Nurse AUTO_INCREMENT = 120001;
 
 CREATE TABLE Nur_belong (
     Dept_id INT NOT NULL,
