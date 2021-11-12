@@ -104,8 +104,11 @@ def patient_record():
     cur = mysql.connection.cursor()
     cur.execute(f"SELECT * FROM Patient")
     patients = list(cur.fetchall())
+    cur.execute(f"SELECT COUNT(Ssn) FROM Patient")
+    count = cur.fetchone()
+    num_patients = int(count[0])
     cur.close()
-    return render_template('dashboard//patient.html', patients=patients)
+    return render_template('dashboard//patient.html', patients=patients, num_patients=num_patients)
 
 @record.route('/patient-record', methods=['POST'])
 def patient_record_post():
@@ -116,7 +119,7 @@ def patient_record_post():
     search_input = (str(request.form.get('search_input')).lower()).strip()
     input_date = str(request.form.get('input_date'))
     search_input = re.sub(' +', ' ', search_input)
-
+    num_patients = 0
     print(search_input)
     print('input date: ' + input_date)
     search_result = []
@@ -127,19 +130,26 @@ def patient_record_post():
         # query by name
         cur.execute(f"SELECT * FROM Patient WHERE LOWER(Pat_name) LIKE '%{search_input}%' ")
         search_result += list(cur.fetchall())
+        cur.execute(f"SELECT COUNT(Ssn) FROM Patient WHERE LOWER(Pat_name) LIKE CONCAT('%', '{search_input}', '%');")
+        num_patients += int(cur.fetchone()[0])
         # query by gender
         if search_input == 'men' or search_input == 'male':
             cur.execute(f"SELECT * FROM Patient WHERE Sex='M'")
             search_result += list(cur.fetchall())
+            cur.execute(f"SELECT COUNT(Ssn) FROM Patient WHERE Sex = 'M'")
+            num_patients += int(cur.fetchone()[0])
         elif search_input == 'woman' or search_input == 'female':
             cur.execute(f"SELECT * FROM Patient WHERE Sex='F'")
             search_result += list(cur.fetchall())
-
+            cur.execute(f"SELECT COUNT(Ssn) FROM Patient WHERE Sex = 'F'")
+            num_patients += int(cur.fetchone()[0])
         # query by age
         try:
             search_input = int(search_input)
             cur.execute(f"SELECT * FROM Patient WHERE Age = '{search_input}'")
             search_result = search_result + list(cur.fetchall())
+            cur.execute(f"SELECT COUNT(Ssn) FROM Patient WHERE Age = '{search_input}'")
+            num_patients += int(cur.fetchone()[0])
         except:
             pass
 
@@ -148,11 +158,13 @@ def patient_record_post():
         if len(input_date) > 0:
             cur.execute(f"SELECT * FROM Patient WHERE DOB = '{input_date}'")
             search_result += list(cur.fetchall())
+            cur.execute(f"SELECT COUNT(Ssn) FROM Patient WHERE DOB = '{input_date}'")
+            num_patients += int(cur.fetchone()[0])
             print(search_result)
     except:
         pass
     cur.close()
-    return render_template('dashboard//patient.html', patients=search_result)
+    return render_template('dashboard//patient.html', patients=search_result, num_patients=num_patients, current_search=search_input)
 
 @record.route('/medicine-record')
 def medicine_record():
@@ -165,10 +177,13 @@ def medicine_record():
     FROM Medicine, Disease, Cure
     WHERE Mdc_name LIKE '%' AND Medicine.Mdc_id = Cure.Mdc_id AND Cure.Dis_id = Disease.Dis_id;
     """
+    num_medicines = 0
     cur.execute(query_input)
     medicines = list(cur.fetchall())
+    cur.execute(f"SELECT COUNT(Mdc_id) FROM Medicine")
+    num_medicines = int(cur.fetchone()[0])
     cur.close()
-    return render_template('dashboard//medicine.html', medicines=medicines)
+    return render_template('dashboard//medicine.html', medicines=medicines, num_medicines=num_medicines)
 
 @record.route('/medicine-record', methods=['POST'])
 def medicine_record_post():
@@ -181,18 +196,20 @@ def medicine_record_post():
     print(search_input)
     if len(search_input) == 0:
         return redirect(url_for('record.medicine_record'))
-
+    num_medicines = 0
     search_result = []
     # query by name
     try:
         cur = mysql.connection.cursor()
         query_input = f"""
-        SELECT Medicine.Mdc_id, Mdc_name, Dis_name, Price, MFG, EXP, Quantity, Manufacturer
+        SELECT Medicine.Mdc_id, Mdc_name, Price, MFG, EXP, Quantity, Manufacturer, Dis_name
         FROM Medicine, Disease, Cure
         WHERE LOWER(Mdc_name) LIKE '%{search_input}%' AND Medicine.Mdc_id = Cure.Mdc_id AND Cure.Dis_id = Disease.Dis_id;
         """
         cur.execute(query_input)
         search_result += list(cur.fetchall())
+        cur.execute(f"SELECT COUNT(Mdc_id) FROM Medicine WHERE LOWER(Mdc_name) LIKE CONCAT('%', '{search_input}', '%')")
+        num_medicines += int(cur.fetchone()[0])
     except:
         pass
     # query by disease name
@@ -200,10 +217,16 @@ def medicine_record_post():
         query_input = f"""
         SELECT Medicine.Mdc_id, Mdc_name, Price, MFG, EXP, Quantity, Manufacturer, Disease.Dis_name
         FROM Medicine, Disease, Cure
-        WHERE Dis_name LIKE '%{search_input}%' AND Disease.Dis_id = Cure.Dis_id AND Cure.Mdc_id = Medicine.Mdc_id;
+        WHERE LOWER(Dis_name) LIKE '%{search_input}%' AND Disease.Dis_id = Cure.Dis_id AND Cure.Mdc_id = Medicine.Mdc_id;
         """
         cur.execute(query_input)
         search_result += list(cur.fetchall())
+        cur.execute(f"""
+        SELECT COUNT(Medicine.Mdc_id)
+        FROM Medicine, Disease, Cure
+        WHERE Dis_name LIKE '%{search_input}%' AND Disease.Dis_id = Cure.Dis_id AND Cure.Mdc_id = Medicine.Mdc_id;
+        """)
+        num_medicines += int(cur.fetchone()[0])
     except:
         pass
     # query by price
@@ -211,10 +234,15 @@ def medicine_record_post():
         search_input = int(search_input)
         cur.execute(f"SELECT * FROM Medicine WHERE Price = '{search_input}'")
         search_result = search_result + list(cur.fetchall())
+        cur.execute(f"""
+        SELECT COUNT(Medicine.Mdc_id)
+        FROM Medicine, Disease, Cure
+        WHERE Price = '{search_input}' AND Disease.Dis_id = Cure.Dis_id AND Cure.Mdc_id = Medicine.Mdc_id;""")
+        num_medicines += int(cur.fetchone()[0])
     except:
         pass
     cur.close()
-    return render_template('dashboard//medicine.html', medicines=search_result) 
+    return render_template('dashboard//medicine.html', medicines=search_result, num_medicines=num_medicines, current_search=search_input)
 
 @record.route('/add-medicine')
 def add_medicine():
@@ -295,23 +323,24 @@ def medicine_record_delete(id):
         flash('You are not logged in!')
         return redirect(url_for('main.index'))
     cur = mysql.connection.cursor()
-    cur.execute(f"DELETE FROM Medicine WHERE Med_id={id}")
+    cur.execute(f"DELETE FROM Medicine WHERE Mdc_id={id}")
     mysql.connection.commit()
     cur.close()
     return redirect(url_for('record.medicine_record'))
 
 @record.route('/medical-record')
 def medical_record():
-    return render_template('dashboard//medical-record.html')
+
+    return render_template('dashboard//medical-record.html', num_reports=0)
 
 @record.route('/medical-record', methods=['POST'])
 def medical_record_post():
     if LOGGED_IN not in session:
         flash('You are not logged in!')
         return redirect(url_for('main.index'))
-
     # search by between date
     search_result = []
+    num_reports = 0
     start_date = str(request.form.get('start_date'))
     end_date = str(request.form.get('end_date'))
     print('Start date: ' + start_date)
@@ -325,9 +354,11 @@ def medical_record_post():
         """
         cur.execute(query_input)
         search_result += list(cur.fetchall())
+        cur.execute(f"SELECT COUNT(*) FROM Report WHERE Date BETWEEN '{start_date}' AND '{end_date}'")
+        num_reports = int(cur.fetchone()[0])
         cur.close()
         print(search_result)
-        return render_template('dashboard//medical-record.html', reports=search_result)
+        return render_template('dashboard//medical-record.html', reports=search_result, num_reports=num_reports)
         
     # filter search
     search_input = (str(request.form.get('search_input')).lower()).strip()
@@ -335,6 +366,22 @@ def medical_record_post():
     print(search_input)
     if len(search_input) == 0:
         return redirect(url_for('record.medical_record'))
+
+    # query by report id
+    try:
+        cur = mysql.connection.cursor()
+        query_input = f"""
+        SELECT Report.Re_id, Pat_name, Doc_name, Category, Description, Date
+        FROM Report, Doctor, Patient
+        WHERE re_id = '{search_input}' AND Report.Ssn = Patient.Ssn AND Report.Doc_id = Doctor.Doc_id;
+        """
+        cur.execute(query_input)
+        search_result += list(cur.fetchall())
+        cur.execute(f"SELECT COUNT(*) FROM Report WHERE re_id='{search_input}'")
+        num_reports += int(cur.fetchone()[0])
+    except:
+        pass
+
     # query by patient name
     try:
         cur = mysql.connection.cursor()
@@ -345,10 +392,12 @@ def medical_record_post():
         """
         cur.execute(query_input)
         search_result += list(cur.fetchall())
+        cur.execute(f"SELECT COUNT(Report.Re_id) FROM Report, Doctor, Patient WHERE LOWER(Pat_name) LIKE '%{search_input}%' AND Report.Ssn = Patient.Ssn AND Report.Doc_id = Doctor.Doc_id;")
+        num_reports += int(cur.fetchone()[0])
     except:
         pass
     cur.close()
-    return render_template('dashboard//medical-record.html', reports=search_result)
+    return render_template('dashboard//medical-record.html', reports=search_result, num_reports=num_reports, current_search=search_input)
 
 @record.route('/add-report', methods=['POST'])
 def add_medical_record_post():
@@ -383,3 +432,194 @@ def add_medical_record_post():
     mysql.connection.commit()
     cur.close()
     return redirect(url_for('record.medical_record'))
+
+@record.route('/bill-record')
+def bill_record():
+    if LOGGED_IN not in session:
+        flash('You are not logged in!')
+        return redirect(url_for('main.index'))
+    cur = mysql.connection.cursor()
+    cur.execute(f"""
+    SELECT Bill_no, Created_date, Pur_date, Service_charge, Discount, Total_fee, Pur_type, Pat_name, Patient.Tel_no, Acct_name, Accountant.Tel_no
+    FROM Bill, Patient, Accountant
+    WHERE Bill.Ssn = Patient.Ssn AND Bill.Acct_id = Accountant.Acct_id;
+    """)
+    bills = list(cur.fetchall())
+    cur.execute(f"SELECT COUNT(*) FROM Bill")
+    num_bills = int(cur.fetchone()[0])
+    cur.close()
+    return render_template('dashboard//bill-record.html', bills=bills, num_bills=num_bills)
+
+@record.route('/bill-record', methods=['POST'])
+def bill_record_post():
+    if LOGGED_IN not in session:
+        flash('You are not logged in!')
+        return redirect(url_for('main.index'))
+
+    # find bill between two dates
+    start_date = str(request.form.get('start_date'))
+    end_date = str(request.form.get('end_date'))
+    print('start date: ' + start_date)
+    print('end date: ' + end_date)
+    if len(start_date) > 0 and len(end_date) > 0:
+        search_result = []
+        cur = mysql.connection.cursor()
+        query_input = f"""
+        SELECT Bill_no, Created_date, Pur_date, Service_charge, Discount, Total_fee, Pur_type, Pat_name, Patient.Tel_no, Acct_name, Accountant.Tel_no
+        FROM Bill, Patient, Accountant
+        WHERE (Pur_date BETWEEN '{start_date}' AND '{end_date}') AND Bill.Ssn = Patient.Ssn AND Bill.Acct_id = Accountant.Acct_id;
+        """
+        cur.execute(query_input)
+        search_result += list(cur.fetchall())
+        cur.execute(f"SELECT COUNT(*) FROM Bill WHERE (Pur_date BETWEEN '{start_date}' AND '{end_date}')")
+        num_bills = int(cur.fetchone()[0])
+        cur.close()
+        return render_template('dashboard//bill-record.html', bills=search_result, num_bills=num_bills)
+
+    search_input = (str(request.form.get('search_input')).lower()).strip()
+    search_input = re.sub(' +', ' ', search_input)
+    search_result = []
+    num_bills = 0
+    if len(search_input) == 0:
+        return redirect(url_for('record.bill_record'))
+    # find bills by name
+    cur = mysql.connection.cursor()
+    query_input = f"""
+    SELECT Bill_no, Created_date, Pur_date, Service_charge, Discount, Total_fee, Pur_type, Patient.Pat_name, Patient.Tel_no, Acct_name, Accountant.Tel_no
+    FROM Bill, Patient, Accountant
+    WHERE LOWER(Patient.Pat_name) LIKE '%{search_input}%' AND Bill.Ssn = Patient.Ssn AND bill.Acct_id=Accountant.Acct_id;
+    """
+    cur.execute(query_input)
+    search_result += list(cur.fetchall())
+    cur.execute(f"SELECT COUNT(*) FROM Bill, Patient WHERE LOWER(Patient.Pat_name) LIKE '%{search_input}%' AND Bill.Ssn = Patient.Ssn")
+    num_bills += int(cur.fetchone()[0])
+
+    # find bills by bill no
+    query_input = f"""
+    SELECT Bill_no, Created_date, Pur_date, Service_charge, Discount, Total_fee, Pur_type, Pat_name, Patient.Tel_no, Acct_name, Accountant.Tel_no
+    FROM Bill, Patient, Accountant
+    WHERE Bill_no='{search_input}' AND Bill.Ssn = Patient.Ssn AND bill.Acct_id=Accountant.Acct_id;
+    """
+    cur.execute(query_input)
+    search_result += list(cur.fetchall())
+    cur.execute(f"SELECT COUNT(*) FROM Bill WHERE Bill_no='{search_input}'")
+    num_bills += int(cur.fetchone()[0])
+
+
+    cur.close()
+    return render_template('dashboard//bill-record.html', bills=search_result, num_bills=num_bills, current_search=search_input)
+
+@record.route('/add-bill')
+def add_bill_record():
+    if LOGGED_IN not in session:
+        flash('You are not logged in!')
+        return redirect(url_for('main.index'))
+    cur = mysql.connection.cursor()
+    cur.execute(f"SELECT * FROM Insurance_company;")
+    ins_companies = list(cur.fetchall())
+    cur.execute(f"SELECT Acct_id, Acct_name, Tel_no FROM Accountant;")
+    accountants = list(cur.fetchall())
+    cur.close()
+    return render_template('record//add-bill.html', ins_companies=ins_companies, accountants=accountants)
+
+
+
+@record.route('/bill-report')
+def bill_report():
+    if LOGGED_IN not in session:
+        flash('You are not logged in!')
+        return redirect(url_for('main.index'))
+
+    cur = mysql.connection.cursor()
+    query_input = f"""
+    SELECT COUNT(Bill_no) AS Total_bill
+    FROM Bill, Patient, Accountant
+    WHERE Pur_date = CURDATE() AND Bill.Ssn = Patient.Ssn AND Bill.Acct_id = Accountant.Acct_id;
+    """
+    cur.execute(query_input)
+    total_bill = int(cur.fetchone()[0] or 0)
+    query_input = f"""
+    SELECT SUM(Total_fee) AS Total_revenue
+    FROM Bill, Patient, Accountant
+    WHERE Pur_date = CURDATE() AND Bill.Ssn = Patient.Ssn AND Bill.Acct_id = Accountant.Acct_id;
+    """
+    cur.execute(query_input)
+    total_amount = int(cur.fetchone()[0] or 0)
+
+    query_input = f"""
+    SELECT AVG(Total_fee) AS Average_revenue
+    FROM Bill, Patient, Accountant
+    WHERE Pur_date = CURDATE() AND Bill.Ssn = Patient.Ssn AND Bill.Acct_id = Accountant.Acct_id;
+    """
+    cur.execute(query_input)
+    average_amount = int(cur.fetchone()[0] or 0)
+
+    query_input = f"""
+    SELECT MAX(Total_fee) AS Max_bill_fee
+    FROM Bill, Patient, Accountant
+    WHERE Pur_date = CURDATE() AND Bill.Ssn = Patient.Ssn AND Bill.Acct_id = Accountant.Acct_id;
+    """
+    cur.execute(query_input)
+    hightest_amount = int(cur.fetchone()[0] or 0)
+
+    query_input = f"""
+    SELECT MIN(Total_fee) AS Min_bill_fee
+    FROM Bill, Patient, Accountant
+    WHERE Pur_date = CURDATE() AND Bill.Ssn = Patient.Ssn AND Bill.Acct_id = Accountant.Acct_id;
+    """
+    cur.execute(query_input)
+    lowest_amount = int(cur.fetchone()[0] or 0)
+    return render_template('dashboard//bill-report.html', total_bill=total_bill, total_amount=total_amount, average_amount=average_amount, hightest_amount=hightest_amount, lowest_amount=lowest_amount)
+
+@record.route('/bill-report', methods=['POST'])
+def bill_report_post():
+    if LOGGED_IN not in session:
+        flash('You are not logged in!')
+        return redirect(url_for('main.index'))
+
+    start_date = str(request.form.get('start_date'))
+    end_date = str(request.form.get('end_date'))
+    if len(start_date) == 0 or len(end_date) == 0:
+        flash('Please enter both start date and end date!')
+        return redirect(url_for('record.bill_report'))
+    cur = mysql.connection.cursor()
+    query_input = f"""
+    SELECT COUNT(Bill_no) AS Total_bill
+    FROM Bill, Patient, Accountant
+    WHERE (Pur_date BETWEEN '{start_date}' AND '{end_date}') AND Bill.Ssn = Patient.Ssn AND Bill.Acct_id = Accountant.Acct_id;
+    """
+    cur.execute(query_input)
+    total_bill_between = int(cur.fetchone()[0] or 0)
+    query_input = f"""
+    SELECT SUM(Total_fee) AS Total_revenue
+    FROM Bill, Patient, Accountant
+    WHERE (Pur_date BETWEEN '{start_date}' AND '{end_date}') AND Bill.Ssn = Patient.Ssn AND Bill.Acct_id = Accountant.Acct_id;
+    """
+    cur.execute(query_input)
+    total_amount_between = int(cur.fetchone()[0] or 0)
+
+    query_input = f"""
+    SELECT AVG(Total_fee) AS Average_revenue
+    FROM Bill, Patient, Accountant
+    WHERE (Pur_date BETWEEN '{start_date}' AND '{end_date}') AND Bill.Ssn = Patient.Ssn AND Bill.Acct_id = Accountant.Acct_id;
+    """
+    cur.execute(query_input)
+    average_amount_between = int(cur.fetchone()[0] or 0)
+
+    query_input = f"""
+    SELECT MAX(Total_fee) AS Max_bill_fee
+    FROM Bill, Patient, Accountant
+    WHERE (Pur_date BETWEEN '{start_date}' AND '{end_date}') AND Bill.Ssn = Patient.Ssn AND Bill.Acct_id = Accountant.Acct_id;
+    """
+    cur.execute(query_input)
+    hightest_amount_between = int(cur.fetchone()[0] or 0)
+
+    query_input = f"""
+    SELECT MIN(Total_fee) AS Min_bill_fee
+    FROM Bill, Patient, Accountant
+    WHERE (Pur_date BETWEEN '{start_date}' AND '{end_date}') AND Bill.Ssn = Patient.Ssn AND Bill.Acct_id = Accountant.Acct_id;
+    """
+    cur.execute(query_input)
+    lowest_amount_between = int(cur.fetchone()[0] or 0)
+
+    return render_template('dashboard//bill-report.html',searching=True , total_bill_between=total_bill_between, total_amount_between=total_amount_between, average_amount_between=average_amount_between, hightest_amount_between=hightest_amount_between, lowest_amount_between=lowest_amount_between)

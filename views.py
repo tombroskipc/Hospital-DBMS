@@ -29,6 +29,10 @@ def dashboard_post():
             return redirect(url_for('record.medical_record'))
         elif request.form['record_choice'] == 'medicine_record':
             return redirect(url_for('record.medicine_record'))
+        elif request.form['record_choice'] == 'bill_record':
+            return redirect(url_for('record.bill_record'))
+        elif request.form['record_choice'] == 'bill_report':
+            return redirect(url_for('record.bill_report'))
     return redirect(url_for('main.index'))
 
 

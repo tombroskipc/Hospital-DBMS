@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block head%}
+<title>Add medicine</title>
+{%endblock%}
+
+{% block body%}
+<div class="container">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="text-center mb-3 mx-1 mx-md-4 mt-4 alert alert-danger" role="alert">
+        {{ messages[0] }}
+    </div>
+    {% endif %}
+    {% endwith %}
+    <div class="main-body">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                    <h1 class="h1 text-center text-primary">Bill</h1>
+                        <form method="POST" action="{{ url_for('record.add_medicine_post') }}">
+                        <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Created_date</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <input name='create_date' type="date" class="form-control" placeholder="yyyy-mm-dd">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Total_fee</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <input name='total_fee' type="number" class="form-control" placeholder="Enter price">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">InsCo_id</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <select name="ins_co" class="form-select" aria-label="Default select example">
+                                    <option selected>Choose Insurance Co</option>
+                                    {% for company in ins_companies %}
+                                    <option value="{{ company[0] }}">{{ company[1] }}</option>
+                                    {% endfor %}
+                                  </select>                            
+                             </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Discount</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <input name="discount" type="number" class="form-control" placeholder="Enter Discount">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Ssn</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <input name="ssn" type="number" class="form-control" placeholder="Add Ssn">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Pur_date</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <input name="purchase_date" type="date" class="form-control" placeholder="yyyy-mm-dd">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Pur_type</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <input name="purchase_type" type="text" class="form-control" placeholder="Select Purchase Type">
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Acct_id</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                <input name="account_id" type="number" class="form-control" placeholder="Enter Account ID">
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-sm-3"></div>
+                            <div class="col-sm-9 text-secondary">
+                                <input name="save_changes" type="submit" class="btn btn-primary px-4" value="Confirm">
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
