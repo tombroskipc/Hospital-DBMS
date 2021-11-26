@@ -10,7 +10,7 @@
 
 <div class="container">
     <h2>Find medicine</h2>
-    <p>Type something in the input field to search the table for first names, last names or emails:</p>  
+    <p>Type something in the input field to search the table for name of medicine or name of disease:</p>  
     <form class="row" method="POST" action="{{ url_for('record.medicine_record_post') }}">
         <input name="search_input" class="form-control col" id="myInput" type="text" placeholder="Search.." value="{{current_search}}">
         <div class="col-1"></div>

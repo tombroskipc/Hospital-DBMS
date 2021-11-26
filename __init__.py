@@ -17,7 +17,7 @@ def create_app(config_file='settings.py'):
     app.config['MYSQL_HOST'] = 'localhost'
     app.config['MYSQL_USER'] = 'root'
     app.config['MYSQL_PASSWORD'] = 'password'
-    app.config['MYSQL_DB'] = 'hospital_dbms'
+    app.config['MYSQL_DB'] = 'Hospital'
     mysql.init_app(app)
     app.config.from_pyfile(config_file)
     app.register_blueprint(main)

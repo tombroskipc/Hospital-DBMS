@@ -7,6 +7,9 @@ def get_year():
 def get_today():
     return datetime.date.today().strftime('%Y-%m-%d')
 
+def get_7_days_ago():
+    return datetime.date.today() - datetime.timedelta(days=7)
+
 def get_today_web_choice():
     return datetime.date.today().strftime('%m-%d-%Y')
 
@@ -15,3 +18,4 @@ def get_random_re_id():
     return random.randint(10000000, 99999999)
 
 # def calculate_today_bill():
+print(get_7_days_ago())

@@ -9,8 +9,8 @@ VALUES (292567083, 'Dare Lucas', 'M', '1980-02-14',	41, '7416 Ireland Ct, El Pas
        (575419103, 'Olson Tracy', 'F', '1956-11-25', 65, '730 Field Ave, Taft, Texas', NULL, NULL, 2, '2020-11-19',	'2024-11-18');
 
 INSERT INTO Accountant
-VALUES (130001, 'Stokes Ashlee', 'ashleelee@gmail.com', 6012484710),
-       (130002, 'Parisian Helen', 'helen321@hotmail.com', 5805694574);
+VALUES (130001, 'Stokes Ashlee', 'ashleelee@gmail.com', 6012484710, '123'),
+       (130002, 'Parisian Helen', 'helen321@hotmail.com', 5805694574, '123');
 
 INSERT INTO Bill
 VALUES (61461265, '2021-06-06',	100, 50, 1,	50,	292567083, '2021-06-06', 'cash', 130001),
@@ -22,9 +22,9 @@ VALUES (1, 'cardiology'),
        (2, 'general internal medicine');
 
 INSERT INTO Doctor
-VALUES (110001, 'Ziemann Timothy', 'ENT specialist', 28, '303 Valmar, Kemah, Texas', 5753361371),
-       (110002,	'White Warren',	'orthopaedic surgeon', 33, '1105 Clover Dr, Burkburnett, Texas', 5805694580),
-       (110003,	'Wehner Nico', 'cardiologist', 40, '369 Arnold Dr, Gordonville, Texas',	5809202612);
+VALUES (110001, 'Ziemann Timothy', 'ENT specialist', 28, '303 Valmar, Kemah, Texas', 5753361371, '123'),
+       (110002,	'White Warren',	'orthopaedic surgeon', 33, '1105 Clover Dr, Burkburnett, Texas', 5805694580, '123'),
+       (110003,	'Wehner Nico', 'cardiologist', 40, '369 Arnold Dr, Gordonville, Texas',	5809202612, '123');
 
 INSERT INTO Doc_belong
 VALUES (2, 110001),
@@ -59,22 +59,22 @@ VALUES (10001, 2),
        (10003, 1);
 
 INSERT INTO Test
-VALUES (1, 'ear checking', '2021-06-06', 100);
+VALUES (1, 'ear checking', 100);
 
 INSERT INTO Do_test
-VALUES (1, 110001, 292567083);
+VALUES (1, 110001, 292567083, '2021-06-06', 10);
 
 INSERT INTO Operation
-VALUES (1, 'heart operation', 3, '2021-08-17', '11:00:00');
+VALUES (1, 'heart operation', 3, '11:00:00');
 
 INSERT INTO Operate
-VALUES (1, 110003, 575419103);
+VALUES (1, 110003, 575419103, '2021-06-06 10:10:10', '2021-06-06 20:10:10', 500);
 
 INSERT INTO Appointment
-VALUES ('2021-06-11');
+VALUES (1, '1:00:00');
 
 INSERT INTO Consult
-VALUES ('2021-06-11', 110001, 415310368);
+VALUES (1, 110001, 415310368, '2021-06-11', 200);
 
 INSERT INTO Room
 VALUES (1, 'recovery', 50, 'available'),
@@ -85,9 +85,9 @@ INSERT INTO Admit
 VALUES (575419103, 2 ,10, 1000);
 
 INSERT INTO Nurse
-VALUES (120001, 'Willms Amy', 'cardiac', 40, 'day'),
-       (120002, 'Schmitt Erica', 'registered', 30, 'day'),
-       (120003, 'Blick Ken', 'registered', 34, 'night');
+VALUES (120001, 'Willms Amy', 'cardiac', 40, 'day', '123'),
+       (120002, 'Schmitt Erica', 'registered', 30, 'day', '123'),
+       (120003, 'Blick Ken', 'registered', 34, 'night', '123');
 
 INSERT INTO Care
 VALUES (575419103, 120001),

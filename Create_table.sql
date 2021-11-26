@@ -1,9 +1,3 @@
--- CREATE a Hospital schema
-CREATE SCHEMA Hospital;
-
--- USE Hospital schema
-USE Hospital;
-
 -- CREATE 25 TABLES
 CREATE TABLE Insurance_company (
     InsCo_id INT NOT NULL AUTO_INCREMENT,
@@ -34,6 +28,7 @@ CREATE TABLE Accountant (
     Acct_name VARCHAR(50) NOT NULL,
     Email VARCHAR(50) NOT NULL,
     Tel_no VARCHAR(10) NOT NULL,
+    pass varchar(50) NOT NULL,
     PRIMARY KEY (Acct_id)
 );
 -- Set up starting value
@@ -69,6 +64,7 @@ CREATE TABLE Doctor (
     Age INT,
     Address VARCHAR(100),
     Tel_no VARCHAR(10) NOT NULL,
+    pass varchar(50) NOT NULL,
     PRIMARY KEY (Doc_id)
 );
 -- Set up starting value
@@ -230,6 +226,7 @@ CREATE TABLE Nurse (
     Nur_type VARCHAR(20) NOT NULL,
     Age INT,
     Shift VARCHAR(10),
+	pass varchar(50) NOT NULL,
     PRIMARY KEY (Nur_id)
 );
 -- Set up starting value

@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from db import mysql
-from utils import get_year, get_random_re_id
+from utils import get_year, get_random_re_id, get_today, get_7_days_ago
 import re
+import graph
 record = Blueprint('record', __name__)
 
 LOGGED_IN = 'logged_in'
@@ -10,14 +11,40 @@ LOGGED_IN = 'logged_in'
 def view_record(ssn):
     cur = mysql.connection.cursor()
     query_input = f"""
-    SELECT Patient.Ssn, Patient.Pat_name, Patient.Sex, Patient.DOB, Patient.Age, Patient.Address, Patient.Tel_no, Patient.Email, Insurance_company.InsCo_name, Patient.Start_date, Patient.End_date
-    FROM Patient, Insurance_company
-    WHERE Patient.Ssn LIKE '%{ssn}%' AND Patient.InsCo_id = Insurance_company.InsCo_id;
+    SELECT Patient.Ssn, Patient.Pat_name, Patient.Sex, Patient.DOB, Patient.Age, Patient.Address, Patient.Tel_no, Patient.Email, Patient.InsCo_id, Patient.Start_date, Patient.End_date
+    FROM Patient
+    WHERE Patient.Ssn LIKE '%{ssn}%';
     """
     cur.execute(query_input)
     record = cur.fetchone()
+    ins_name = f"""
+    SELECT *
+    FROM Insurance_company
+    WHERE Insurance_company.InsCo_id LIKE '%{record[8]}%';
+    """
+    cur.execute(ins_name)
+    ins_name = cur.fetchone()
+    if ins_name is None:
+        ins_name = "None"
+    else:
+        ins_name = ins_name[1]
+    print(record)
+        # query by report id
+    reports = []
+    num_reports = 0
+    try:
+        query_input = f"""
+        SELECT Report.Re_id, Pat_name, Doc_name, Category, Description, Date
+        FROM Report, Doctor, Patient
+        WHERE Patient.Ssn = {record[0]} AND Report.Ssn = Patient.Ssn AND Report.Doc_id = Doctor.Doc_id;
+        """
+        cur.execute(query_input)
+        reports += list(cur.fetchall())
+        num_reports += len(reports)
+    except:
+        pass
     cur.close()
-    return render_template('record//patient.html', record=record)
+    return render_template('record//patient.html', record=record, ins_name=ins_name, reports=reports, num_reports=num_reports)
 
 @record.route('/edit-profile/<int:ssn>')
 def edit_profile(ssn):
@@ -26,13 +53,25 @@ def edit_profile(ssn):
         return redirect(url_for('main.index'))
     cur = mysql.connection.cursor()
     query_input = f"""
-    SELECT Patient.Ssn, Patient.Pat_name, Patient.Sex, Patient.DOB, Patient.Age, Patient.Address, Patient.Tel_no, Patient.Email, Insurance_company.InsCo_name, Patient.Start_date, Patient.End_date
-    FROM Patient, Insurance_company
-    WHERE Patient.Ssn LIKE '%{ssn}%' AND Patient.InsCo_id = Insurance_company.InsCo_id;
+    SELECT Patient.Ssn, Patient.Pat_name, Patient.Sex, Patient.DOB, Patient.Age, Patient.Address, Patient.Tel_no, Patient.Email, Patient.InsCo_id, Patient.Start_date, Patient.End_date
+    FROM Patient
+    WHERE Patient.Ssn LIKE '%{ssn}%';
     """
     cur.execute(query_input)
     record = cur.fetchone()
-    return render_template('record//edit-profile.html', record=record)
+    ins_name = f"""
+    SELECT *
+    FROM Insurance_company
+    WHERE Insurance_company.InsCo_id LIKE '%{record[8]}%';
+    """
+    cur.execute(ins_name)
+    ins_name = cur.fetchone()
+    if ins_name is None:
+        ins_name = "None"
+    else:
+        ins_name = ins_name[1]
+
+    return render_template('record//edit-profile.html', record=record, ins_name=ins_name)
 
 @record.route('/edit-profile/<int:ssn>', methods=['POST'])
 def edit_profile_post(ssn):
@@ -48,7 +87,10 @@ def edit_profile_post(ssn):
     new_start_date = request.form['start_date']
     new_end_date = request.form['end_date']
     cur = mysql.connection.cursor()
-    cur.execute(f"UPDATE Patient SET Pat_name = '{new_name}', Email = '{new_email}', Tel_no = '{new_phone}', DOB = '{new_DOB}', Address = '{new_address}', Start_date = '{new_start_date}', End_date = '{new_end_date}' WHERE Ssn = {ssn}")
+    if new_start_date == "None" or new_end_date == "None":
+        cur.execute(f"UPDATE Patient SET Pat_name = '{new_name}', Email = '{new_email}', Tel_no = '{new_phone}', DOB = '{new_DOB}', Address = '{new_address}' WHERE Ssn = {ssn}")
+    else:
+        cur.execute(f"UPDATE Patient SET Pat_name = '{new_name}', Email = '{new_email}', Tel_no = '{new_phone}', DOB = '{new_DOB}', Address = '{new_address}', Start_date = '{new_start_date}', End_date = '{new_end_date}' WHERE Ssn = {ssn}")
     mysql.connection.commit()
     cur.close()
     return redirect(url_for('record.view_record', ssn=ssn))
@@ -59,7 +101,7 @@ def delete_profile(ssn):
     cur.execute(f"DELETE FROM Patient WHERE Ssn = {ssn}")
     mysql.connection.commit()
     cur.close()
-    return redirect(url_for('main.index'))
+    return redirect(url_for('record.patient_record'))
 
 @record.route('/add-record')
 def add_profile():
@@ -87,10 +129,23 @@ def add_profile_post():
     new_age = get_year() - int(new_DOB[:4])
     new_address = request.form['address']
     new_InsCo_id = request.form['ins_co']
-    new_start_date = request.form['start_date']
-    new_end_date = request.form['end_date']
+    print(new_InsCo_id)
     cur = mysql.connection.cursor()
-    cur.execute(f"INSERT INTO Patient (Ssn, Pat_name, Sex, Email, Tel_no, DOB, Age, Address, InsCo_id, Start_date, End_date) VALUES ('{new_ssn}', '{new_name}', '{new_sex}', '{new_email}', '{new_phone}', '{new_DOB}', '{new_age}', '{new_address}', {new_InsCo_id}, '{new_start_date}', '{new_end_date}')")
+    if new_InsCo_id != "Choose Insurance Co":
+        new_start_date = request.form['start_date']
+        new_end_date = request.form['end_date']
+        cur.execute(f"""INSERT INTO Patient 
+        (Ssn, Pat_name, Sex, Email, Tel_no, DOB, Age, Address, InsCo_id, Start_date, End_date) VALUES 
+        ('{new_ssn}', '{new_name}', '{new_sex}', '{new_email}', '{new_phone}', 
+        '{new_DOB}', '{new_age}', '{new_address}', 
+        {new_InsCo_id}, 
+        '{new_start_date}', '
+        {new_end_date}')""")
+    else:
+        cur.execute(f"""INSERT INTO Patient 
+        (Ssn, Pat_name, Sex, Email, Tel_no, DOB, Age, Address) VALUES 
+        ('{new_ssn}', '{new_name}', '{new_sex}', '{new_email}', '{new_phone}', 
+        '{new_DOB}', '{new_age}', '{new_address}')""")
     mysql.connection.commit()
     cur.close()
     return redirect(url_for('record.patient_record'))
@@ -175,7 +230,7 @@ def medicine_record():
     query_input = """
     SELECT Medicine.Mdc_id, Mdc_name, Price, MFG, EXP, Quantity, Manufacturer, Dis_name
     FROM Medicine, Disease, Cure
-    WHERE Mdc_name LIKE '%' AND Medicine.Mdc_id = Cure.Mdc_id AND Cure.Dis_id = Disease.Dis_id;
+    WHERE Medicine.Mdc_id = Cure.Mdc_id AND Cure.Dis_id = Disease.Dis_id;
     """
     num_medicines = 0
     cur.execute(query_input)
@@ -431,7 +486,7 @@ def add_medical_record_post():
     cur.execute(f"INSERT INTO Report VALUES('{re_id}', '{category}', '{description}', '{date}', '{doc_id}', '{ssn}');")
     mysql.connection.commit()
     cur.close()
-    return redirect(url_for('record.medical_record'))
+    return redirect(url_for('record.view_record', ssn=ssn))
 
 @record.route('/bill-record')
 def bill_record():
@@ -569,6 +624,18 @@ def bill_report():
     """
     cur.execute(query_input)
     lowest_amount = int(cur.fetchone()[0] or 0)
+    end_date = get_today()
+    start_date = str(get_7_days_ago())
+    query_input = f"""
+    SELECT Pur_date, SUM(Total_fee)
+    FROM Bill, Patient, Accountant
+    WHERE (Pur_date BETWEEN '{start_date}' AND '{end_date}') AND Bill.Ssn = Patient.Ssn AND Bill.Acct_id = Accountant.Acct_id
+    GROUP BY Pur_date;
+    """
+    cur.execute(query_input)
+    date_bill_between = cur.fetchall()
+    print(date_bill_between)
+    graph.bill_report_7_graph(date_bill_between)
     return render_template('dashboard//bill-report.html', total_bill=total_bill, total_amount=total_amount, average_amount=average_amount, hightest_amount=hightest_amount, lowest_amount=lowest_amount)
 
 @record.route('/bill-report', methods=['POST'])
@@ -621,5 +688,14 @@ def bill_report_post():
     """
     cur.execute(query_input)
     lowest_amount_between = int(cur.fetchone()[0] or 0)
-
+    query_input = f"""
+    SELECT Pur_date, SUM(Total_fee)
+    FROM Bill, Patient, Accountant
+    WHERE (Pur_date BETWEEN '{start_date}' AND '{end_date}') AND Bill.Ssn = Patient.Ssn AND Bill.Acct_id = Accountant.Acct_id
+    GROUP BY Pur_date;
+    """
+    cur.execute(query_input)
+    date_bill_between = cur.fetchall()
+    graph.bill_report_graph(date_bill_between, str(start_date), str(end_date))
     return render_template('dashboard//bill-report.html',searching=True , total_bill_between=total_bill_between, total_amount_between=total_amount_between, average_amount_between=average_amount_between, hightest_amount_between=hightest_amount_between, lowest_amount_between=lowest_amount_between)
+

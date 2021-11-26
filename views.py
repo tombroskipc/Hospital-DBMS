@@ -120,9 +120,6 @@ def profile():
     return render_template('user//profile.html')
 
 
-
-
-
 @main.route('/make-appointment')
 def make_appointment():
     return render_template('services//appointment.html')

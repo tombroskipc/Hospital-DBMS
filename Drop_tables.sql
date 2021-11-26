@@ -1,5 +1,3 @@
--- DROP 25 TABLES
--- Group 1: Tables referring to group 2 tables
 DROP TABLE Bill;
 DROP TABLE Doc_belong;
 DROP TABLE Nur_belong;
@@ -27,5 +25,3 @@ DROP TABLE Operation;
 DROP TABLE Appointment;
 DROP TABLE Room;
 DROP TABLE Nurse;
-
-DROP SCHEMA Hospital;
